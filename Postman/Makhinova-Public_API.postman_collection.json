@@ -1,0 +1,562 @@
+{
+	"info": {
+		"_postman_id": "7e3e8fb9-132e-40a7-9f65-9ca37b1a1b35",
+		"name": "Makhinova/Public_API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24310774"
+	},
+	"item": [
+		{
+			"name": "Positive responses",
+			"item": [
+				{
+					"name": "Registration",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const parsedResponseBody = JSON.parse(responseBody)\r",
+									"\r",
+									"pm.test('Ответ метода регистрация корректного формата', () => {\r",
+									"    pm.expect(parsedResponseBody.id).to.be.a('number')\r",
+									"    pm.expect(parsedResponseBody.token).to.be.a('string')\r",
+									"    pm.collectionVariables.set('userId', parsedResponseBody.id)\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"eve.holt@reqres.in\",\r\n    \"password\": \"pistol\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const parsedResponseBody = JSON.parse(responseBody)\r",
+									"\r",
+									"pm.test('Ответ метода авторизации корректного формата', () => {\r",
+									"    pm.expect(parsedResponseBody.token).to.be.a('string')\r",
+									"    pm.collectionVariables.set('token', parsedResponseBody.token)\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"eve.holt@reqres.in\",\r\n    \"password\": \"cityslicka\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get one user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Ответ содержит Body', () => {\r",
+									"    pm.response.to.be.withBody\r",
+									"})\r",
+									"\r",
+									"const parsedResponseBody = JSON.parse(responseBody)\r",
+									"const bodyData = parsedResponseBody?.data\r",
+									"\r",
+									"pm.test('API отдал юзверя с валидным id (который мы отправили в запросе)', () => {\r",
+									"    pm.expect(bodyData.id).to.eql(pm.collectionVariables.get('userId'))\r",
+									"})\r",
+									"\r",
+									"pm.test('Формат ответа валиден схеме из документации', () => {\r",
+									"    const schemaResponse = {\r",
+									"        'type': 'object',\r",
+									"        'properties': {\r",
+									"            'data': {\r",
+									"                'type': 'object',\r",
+									"                'properties': {\r",
+									"                    'id': {\r",
+									"                        'type': 'number'\r",
+									"                    },\r",
+									"                    'email': {\r",
+									"                        'type': 'string'\r",
+									"                    },\r",
+									"                    'first_name': {\r",
+									"                        'type': 'string'\r",
+									"                    },\r",
+									"                    'last_name': {\r",
+									"                        'type': 'string'\r",
+									"                    },\r",
+									"                    'avatar': {\r",
+									"                        'type': 'string'\r",
+									"                    }\r",
+									"                },\r",
+									"                'required': [\r",
+									"                    'id',\r",
+									"                    'email',\r",
+									"                    'first_name',\r",
+									"                    'last_name',\r",
+									"                    'avatar'\r",
+									"                ]\r",
+									"            },\r",
+									"            'support': {\r",
+									"                'type': 'object',\r",
+									"                'properties': {\r",
+									"                    'url': {\r",
+									"                        'type': 'string'\r",
+									"                    },\r",
+									"                    'text': {\r",
+									"                        'type': 'string'\r",
+									"                    }\r",
+									"                },\r",
+									"                'required': [\r",
+									"                    'url',\r",
+									"                    'text'\r",
+									"                ]\r",
+									"            }\r",
+									"        },\r",
+									"        'required': [\r",
+									"            'data',\r",
+									"            'support'\r",
+									"        ]\r",
+									"    }\r",
+									"    pm.response.to.have.jsonSchema(schemaResponse)\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/{{userId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const parsedResponseBody = JSON.parse(responseBody)\r",
+									"\r",
+									"pm.test('Ответ содержит отправленные ключи и новые', () => {\r",
+									"    pm.expect(parsedResponseBody.id).to.be.a('string')\r",
+									"    pm.expect(parsedResponseBody.name).to.be.a('string')\r",
+									"    pm.expect(parsedResponseBody.job).to.be.a('string')\r",
+									"    pm.expect(parsedResponseBody.createdAt).to.be.a('string')\r",
+									"})\r",
+									"\r",
+									"pm.test('name и job соответствуют отправленным', () => {\r",
+									"    pm.expect(parsedResponseBody.name).to.eql(pm.collectionVariables.get('nameCreateUser'))\r",
+									"    pm.expect(parsedResponseBody.job).to.eql(pm.collectionVariables.get('jobCreateUser'))\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('nameCreateUser', 'Frodo Baggins')\r",
+									"pm.collectionVariables.set('jobCreateUser', 'Being a simple hobbit')"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"{{nameCreateUser}}\",\r\n    \"job\": \"{{jobCreateUser}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const parsedResponseBody = JSON.parse(responseBody)\r",
+									"\r",
+									"pm.test('Изменился ключ job',() => {\r",
+									"  pm.expect(parsedResponseBody.job).to.eql(pm.collectionVariables.get('jobUpdateUser'))\r",
+									"})\r",
+									"\r",
+									"pm.test('Появился ключ updatedAt',() => {\r",
+									"    pm.expect(parsedResponseBody.updatedAt).to.be.a('string')\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('jobUpdateUser', \"Sam's friend\")"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"job\": \"Sam's friend\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "100500"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "100500"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"const goodStatusCodes = [200, 201, 204]",
+							"",
+							"pm.test(`Корректный статус код (один из массива ${JSON.stringify(goodStatusCodes)})`, () => {",
+							"    pm.expect(goodStatusCodes.includes(pm.response.code)).to.be.true",
+							"})",
+							"",
+							"pm.test('Контроль Content-Type и Content-Length', () => {",
+							"    if (pm.request.method === 'DELETE') {",
+							"        pm.response.to.have.header('Content-Length')",
+							"        pm.expect(pm.response.headers.get('Content-Length')).to.eql('0')",
+							"    } else {",
+							"        pm.response.to.have.header('Content-Type')",
+							"        pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+							"    }",
+							"})"
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Negative responses",
+			"item": [
+				{
+					"name": "Registration error",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"{{$randomPassword}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login error",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"{{$randomPassword}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"const badStatusCodes = [400, 404]",
+							"",
+							"pm.test(`Корректный статус код (один из массива ${JSON.stringify(badStatusCodes)})`, () => {",
+							"    pm.expect(badStatusCodes.includes(pm.response.code)).to.be.true",
+							"})"
+						]
+					}
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"const timeout = 3000",
+					"",
+					"pm.test(`Время ответа меньше ${timeout / 1000} секунд`, () => {",
+					"    pm.expect(pm.response.responseTime).to.be.below(timeout)",
+					"})"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://reqres.in/api",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "null"
+		},
+		{
+			"key": "token",
+			"value": "null"
+		},
+		{
+			"key": "nameCreateUser",
+			"value": "null"
+		},
+		{
+			"key": "jobCreateUser",
+			"value": "null"
+		},
+		{
+			"key": "jobUpdateUser",
+			"value": "null"
+		}
+	]
+}
